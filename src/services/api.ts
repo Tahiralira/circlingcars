@@ -63,3 +63,26 @@ export const getDownloadUrl = (path: string): string => {
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
   return `${API_BASE_URL}/${cleanPath}`;
 };
+
+export interface LicensePlateResponse {
+  license_plates: { x1: number; y1: number; x2: number; y2: number; confidence: number; text: string }[];
+}
+
+
+export const detectLicensePlate = async (file: File): Promise<LicensePlateResponse> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch('http://localhost:8000/detect_license_plate/', {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+
